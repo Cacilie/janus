@@ -1,4 +1,12 @@
+import { useState, useRef, useEffect } from "react";
+import { Grid, Paper, Text } from "@mantine/core";
 import type { Route } from "./+types/home";
+import { TimerComponent } from "../components/TimerComponent";
+import { ActionsComponent } from "../components/ActionsComponent";
+
+const MAX_TIME = 1;
+
+export type TimerState = "START" | "PAUSE" | "STOP";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -8,9 +16,77 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export default function Home() {
+  const [totalSeconds, setTotalSeconds] = useState(MAX_TIME * 60);
+  const [timerState, setTimerState] = useState<TimerState>("START");
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const startTime = () => {
+    if (intervalRef.current) return;
+    setTimerState("PAUSE");
+    intervalRef.current = setInterval(() => {
+      setTotalSeconds((prev) => {
+        if (prev <= 0) {
+          if (intervalRef.current) clearInterval(intervalRef.current);
+          intervalRef.current = null;
+          setTimerState("STOP");
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const pauseTimer = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    setTimerState("START");
+  };
+
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
   return (
-    <div>
-      <h1>Home</h1>
+    <div className="home-container">
+      <Grid p="md">
+        <Grid.Col span={4}>
+          <Paper p="xl" withBorder>
+            <Text>Row 1, Col 1</Text>
+          </Paper>
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <TimerComponent minutes={minutes} seconds={seconds} />
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <Paper p="xl" withBorder>
+            <Text>Row 1, Col 3</Text>
+          </Paper>
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <Paper p="xl" withBorder>
+            <Text>Row 2, Col 1</Text>
+          </Paper>
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <ActionsComponent 
+            timerState={timerState} 
+            onStart={startTime} 
+            onPause={pauseTimer} 
+          />
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <Paper p="xl" withBorder>
+            <Text>Row 2, Col 3</Text>
+          </Paper>
+        </Grid.Col>
+      </Grid>
     </div>
   );
 }
