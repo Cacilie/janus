@@ -3,6 +3,7 @@ import { Grid, Paper, Text } from "@mantine/core";
 import type { Route } from "./+types/home";
 import { TimerComponent } from "../components/TimerComponent";
 import { ActionsComponent } from "../components/ActionsComponent";
+import { TimesFactory } from "../services/TimesFactory";
 
 const MAX_TIME = 1;
 
@@ -17,8 +18,16 @@ export function meta({ }: Route.MetaArgs) {
 
 export default function Home() {
   const [totalSeconds, setTotalSeconds] = useState(MAX_TIME * 60);
+  const [chronoSeconds, setChronoSeconds] = useState(0);
   const [timerState, setTimerState] = useState<TimerState>("START");
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const startChrono = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => {
+      setChronoSeconds((prev) => prev + 1);
+    }, 1000);
+  };
 
   const startTime = () => {
     if (intervalRef.current) return;
@@ -29,6 +38,7 @@ export default function Home() {
           if (intervalRef.current) clearInterval(intervalRef.current);
           intervalRef.current = null;
           setTimerState("STOP");
+          startChrono();
           return 0;
         }
         return prev - 1;
@@ -42,6 +52,20 @@ export default function Home() {
       intervalRef.current = null;
     }
     setTimerState("START");
+  };
+
+  const stopAll = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    
+    const timesService = TimesFactory.getTimesService();
+    timesService.addTime(MAX_TIME * 60 + chronoSeconds);
+    
+    setTimerState("START");
+    setTotalSeconds(MAX_TIME * 60);
+    setChronoSeconds(0);
   };
 
   useEffect(() => {
@@ -62,7 +86,7 @@ export default function Home() {
           </Paper>
         </Grid.Col>
         <Grid.Col span={4}>
-          <TimerComponent minutes={minutes} seconds={seconds} />
+          <TimerComponent minutes={minutes} seconds={seconds} chronoSeconds={chronoSeconds} />
         </Grid.Col>
         <Grid.Col span={4}>
           <Paper p="xl" withBorder>
@@ -79,6 +103,7 @@ export default function Home() {
             timerState={timerState} 
             onStart={startTime} 
             onPause={pauseTimer} 
+            onStop={stopAll}
           />
         </Grid.Col>
         <Grid.Col span={4}>

@@ -5,14 +5,15 @@ interface ActionsComponentProps {
   timerState: TimerState;
   onStart: () => void;
   onPause: () => void;
+  onStop: () => void;
 }
 
-export function ActionsComponent({ timerState, onStart, onPause }: ActionsComponentProps) {
+export function ActionsComponent({ timerState, onStart, onPause, onStop }: ActionsComponentProps) {
   return (
     <Paper p="xl" withBorder>
       <Group justify="center">
         {timerState === "STOP" ? (
-          <Button size="lg" color="red">
+          <Button size="lg" color="red" onClick={onStop}>
             STOP
           </Button>
         ) : timerState === "START" ? (
