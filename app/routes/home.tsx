@@ -80,24 +80,24 @@ export default function Home() {
 
   return (
     <div className="home-container">
-      <Grid p="md">
-        <Grid.Col span={4}>
-          <Paper p="xl" withBorder>
+      <Grid p="xl">
+        <Grid.Col span={{ base: 12, md: 4 }} order={{ base: 3, md: 1 }}>
+          <Paper p="xl" withBorder style={{ visibility: "hidden" }}>
             <Text>Row 1, Col 1</Text>
           </Paper>
         </Grid.Col>
-        <Grid.Col span={4}>
+        <Grid.Col span={{ base: 12, md: 4 }} order={{ base: 1, md: 2 }}>
           <TimerComponent minutes={minutes} seconds={seconds} chronoSeconds={chronoSeconds} />
         </Grid.Col>
-        <Grid.Col span={4}>
+        <Grid.Col span={{ base: 12, md: 4 }} order={{ base: 4, md: 3 }}>
           <TimeListComponent />
         </Grid.Col>
-        <Grid.Col span={4}>
-          <Paper p="xl" withBorder>
+        <Grid.Col span={{ base: 12, md: 4 }} order={{ base: 5, md: 4 }}>
+          <Paper p="xl" withBorder style={{ visibility: "hidden" }}>
             <Text>Row 2, Col 1</Text>
           </Paper>
         </Grid.Col>
-        <Grid.Col span={4}>
+        <Grid.Col span={{ base: 12, md: 4 }} order={{ base: 2, md: 5 }}>
           <ActionsComponent 
             timerState={timerState} 
             onStart={startTime} 
@@ -105,8 +105,8 @@ export default function Home() {
             onStop={stopAll}
           />
         </Grid.Col>
-        <Grid.Col span={4}>
-          <Paper p="xl" withBorder>
+        <Grid.Col span={{ base: 12, md: 4 }} order={{ base: 6, md: 6 }}>
+          <Paper p="xl" withBorder style={{ visibility: "hidden" }}>
             <Text>Row 2, Col 3</Text>
           </Paper>
         </Grid.Col>
