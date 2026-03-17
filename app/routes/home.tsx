@@ -3,6 +3,7 @@ import { Grid, Paper, Text } from "@mantine/core";
 import type { Route } from "./+types/home";
 import { TimerComponent } from "../components/TimerComponent";
 import { ActionsComponent } from "../components/ActionsComponent";
+import { TimeListComponent } from "../components/TimeListComponent";
 import { TimesFactory } from "../services/TimesFactory";
 
 const MAX_TIME = 1;
@@ -89,9 +90,7 @@ export default function Home() {
           <TimerComponent minutes={minutes} seconds={seconds} chronoSeconds={chronoSeconds} />
         </Grid.Col>
         <Grid.Col span={4}>
-          <Paper p="xl" withBorder>
-            <Text>Row 1, Col 3</Text>
-          </Paper>
+          <TimeListComponent />
         </Grid.Col>
         <Grid.Col span={4}>
           <Paper p="xl" withBorder>
