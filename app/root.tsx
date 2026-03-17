@@ -8,9 +8,10 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import { MantineProvider } from "@mantine/core";
+import { AppShell, ColorSchemeScript, MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "./app.css";
+import { HeaderComponent } from "./components/HeaderComponent";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -33,9 +34,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <ColorSchemeScript defaultColorScheme="dark" />
       </head>
       <body>
-        <MantineProvider>{children}</MantineProvider>
+        <MantineProvider defaultColorScheme="dark">{children}</MantineProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -44,7 +46,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <AppShell header={{ height: 60 }} padding="md">
+      <HeaderComponent />
+      <AppShell.Main>
+        <Outlet />
+      </AppShell.Main>
+    </AppShell>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

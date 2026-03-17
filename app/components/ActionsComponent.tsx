@@ -1,4 +1,5 @@
 import { Button, Group, Paper } from "@mantine/core";
+import { IconPlayerPlay, IconPlayerPause, IconPlayerStop } from "@tabler/icons-react";
 import type { TimerState } from "../routes/home";
 
 interface ActionsComponentProps {
@@ -13,15 +14,30 @@ export function ActionsComponent({ timerState, onStart, onPause, onStop }: Actio
     <Paper p="xl" withBorder>
       <Group justify="center">
         {timerState === "STOP" ? (
-          <Button size="lg" color="red" onClick={onStop}>
+          <Button 
+            size="lg" 
+            color="red" 
+            onClick={onStop}
+            leftSection={<IconPlayerStop size={20} />}
+          >
             STOP
           </Button>
         ) : timerState === "START" ? (
-          <Button size="lg" onClick={onStart} style={{ backgroundColor: "#F0C571", color: "black" }}>
+          <Button 
+            size="lg" 
+            onClick={onStart} 
+            style={{ backgroundColor: "#F0C571", color: "black" }}
+            leftSection={<IconPlayerPlay size={20} />}
+          >
             Start
           </Button>
         ) : (
-          <Button size="lg" onClick={onPause} style={{ backgroundColor: "#F0C571", color: "black" }}>
+          <Button 
+            size="lg" 
+            onClick={onPause} 
+            style={{ backgroundColor: "#F0C571", color: "black" }}
+            leftSection={<IconPlayerPause size={20} />}
+          >
             Pause
           </Button>
         )}
