@@ -16,6 +16,7 @@ export function TimeListComponent() {
     <Table.Tr key={time.id}>
       <Table.Td>{time.id}</Table.Td>
       <Table.Td>{formatTime(time.totalTime)}</Table.Td>
+      <Table.Td>{new Date(time.date).toLocaleString()}</Table.Td>
     </Table.Tr>
   ));
 
@@ -30,6 +31,7 @@ export function TimeListComponent() {
             <Table.Tr>
               <Table.Th>ID</Table.Th>
               <Table.Th>Time</Table.Th>
+              <Table.Th>Date</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>

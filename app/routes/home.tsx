@@ -6,7 +6,7 @@ import { ActionsComponent } from "../components/ActionsComponent";
 import { TimeListComponent } from "../components/TimeListComponent";
 import { TimesFactory } from "../services/TimesFactory";
 
-const MAX_TIME = 15;
+const MAX_TIME = 1;
 
 export type TimerState = "START" | "PAUSE" | "STOP";
 
