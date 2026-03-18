@@ -1,6 +1,7 @@
 export interface Time {
   id: number;
   totalTime: number;
+  date: string;
 }
 
 export class TimesService {
@@ -18,6 +19,7 @@ export class TimesService {
     const newTime: Time = {
       id: this.nextId++,
       totalTime,
+      date: new Date().toISOString(),
     };
     this.times.push(newTime);
     return newTime;
