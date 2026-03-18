@@ -19,6 +19,7 @@
     "@react-router/serve": "7.12.0",
     "@tabler/icons-react": "^3.40.0",
     "isbot": "^5.1.31",
+    "japidb": "^1.0.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-router": "7.12.0"
