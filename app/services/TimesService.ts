@@ -1,3 +1,6 @@
+import { JapiDBFactory } from "./JapiDBFactory";
+import { JapiDBService } from "./JapiDBService";
+
 export interface Time {
   id: number;
   totalTime: number;
@@ -7,9 +10,12 @@ export interface Time {
 export class TimesService {
   private times: Time[] = [];
   private nextId: number = 0;
+  private japiDBService: JapiDBService;
 
   // Constructor is public now, but instance will be managed by Factory
-  constructor() {}
+  constructor() {
+    this.japiDBService = JapiDBFactory.getJapiDBService();
+  }
 
   getTimes(): Time[] {
     return [...this.times];

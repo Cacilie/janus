@@ -5,6 +5,7 @@ import { TimerComponent } from "../components/TimerComponent";
 import { ActionsComponent } from "../components/ActionsComponent";
 import { TimeListComponent } from "../components/TimeListComponent";
 import { TimesFactory } from "../services/TimesFactory";
+import { JapiDBFactory } from "../services/JapiDBFactory";
 
 const MAX_TIME = 15;
 
@@ -18,6 +19,7 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export default function Home() {
+  const japiDBService = JapiDBFactory.getJapiDBService();
   const [totalSeconds, setTotalSeconds] = useState(MAX_TIME * 60);
   const [chronoSeconds, setChronoSeconds] = useState(0);
   const [timerState, setTimerState] = useState<TimerState>("START");
