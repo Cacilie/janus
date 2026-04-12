@@ -5,7 +5,7 @@ import { TimerComponent } from "../components/TimerComponent";
 import { ActionsComponent } from "../components/ActionsComponent";
 import { TimeListComponent } from "../components/TimeListComponent";
 import { TimesFactory } from "../services/TimesFactory";
-import { type TimerState } from "../Types/TimerState";
+import { TimerState, type TimerStateType } from "../Types/TimerState";
 
 const MAX_TIME = 0.5;
 
@@ -17,31 +17,73 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export default function Home() {
-  const [totalSeconds, setTotalSeconds] = useState(MAX_TIME * 60);
-  const [chronoSeconds, setChronoSeconds] = useState(0);
-  const [timerState, setTimerState] = useState<TimerState>("START");
+
+  const getTimeService = () => {
+    return TimesFactory.getTimesService();
+  }
+
+
+  const setTotalSecondsHelper = () => {
+
+    let persistedChronoSecond = getTimeService().getChronoSeconds();
+    let persistedTotalSeconds = getTimeService().getTotalSeconds();
+
+    if(persistedChronoSecond == 0 && persistedTotalSeconds == 0) return MAX_TIME * 60;
+    else return persistedTotalSeconds;
+
+  }
+
+  const setChronoSecondsHelper = () => {
+    let persistedChronoSecond = getTimeService().getChronoSeconds();
+    return persistedChronoSecond;
+  }
+
+  const setTimerStateHelper = () => {
+    let persistedTimerState = getTimeService().getTimerState();
+    return persistedTimerState || TimerState.START;
+  }
+
+  
+
+  const [totalSeconds, setTotalSeconds] = useState(setTotalSecondsHelper());
+  const [chronoSeconds, setChronoSeconds] = useState(setChronoSecondsHelper());
+  const [timerState, setTimerState] = useState<TimerStateType>(setTimerStateHelper());
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+
+
+
 
   const startChrono = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
-      setChronoSeconds((prev) => prev + 1);
+      setChronoSeconds((prev) => {
+        let second = prev + 1;
+        getTimeService().setChronoSeconds(second);
+        return second;
+      });
     }, 1000);
   };
 
   const startTime = () => {
-    if (intervalRef.current) return;
-    setTimerState("PAUSE");
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    setTimerState(TimerState.PAUSE);
+    getTimeService().setTimerState(TimerState.PAUSE);
     intervalRef.current = setInterval(() => {
       setTotalSeconds((prev) => {
         if (prev <= 0) {
           if (intervalRef.current) clearInterval(intervalRef.current);
           intervalRef.current = null;
-          setTimerState("STOP");
+          setTimerState(TimerState.STOP);
+          getTimeService().setTimerState(TimerState.STOP);
           startChrono();
+          getTimeService().setTotalSeconds(0);
           return 0;
         }
-        return prev - 1;
+
+        let seconds = prev - 1;
+        getTimeService().setTotalSeconds(seconds);
+        return seconds;
       });
     }, 1000);
   };
@@ -51,7 +93,8 @@ export default function Home() {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-    setTimerState("START");
+    setTimerState(TimerState.START);
+    getTimeService().setTimerState(TimerState.START);
   };
 
   const stopAll = () => {
@@ -60,15 +103,24 @@ export default function Home() {
       intervalRef.current = null;
     }
     
-    const timesService = TimesFactory.getTimesService();
-    timesService.addTime(MAX_TIME * 60 + chronoSeconds);
+    getTimeService().addTime(MAX_TIME * 60 + chronoSeconds);
     
-    setTimerState("START");
+    setTimerState(TimerState.START);
+    getTimeService().setTimerState(TimerState.START);
     setTotalSeconds(MAX_TIME * 60);
+    getTimeService().setTotalSeconds(MAX_TIME * 60);
     setChronoSeconds(0);
+    getTimeService().setChronoSeconds(0);
   };
 
   useEffect(() => {
+    const persistedState = getTimeService().getTimerState();
+    if (persistedState === TimerState.PAUSE) {
+      startTime();
+    } else if (persistedState === TimerState.STOP) {
+      startChrono();
+    }
+
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
@@ -113,3 +165,4 @@ export default function Home() {
     </div>
   );
 }
+  

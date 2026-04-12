@@ -1,7 +1,7 @@
-import { type TimerState } from "./TimerState";
+import { type TimerStateType } from "./TimerState";
 
 export interface ActionsComponentProps {
-  timerState: TimerState;
+  timerState: TimerStateType;
   onStart: () => void;
   onPause: () => void;
   onStop: () => void;

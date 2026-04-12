@@ -1,6 +1,7 @@
 import { JapiDBFactory } from "./JapiDBFactory";
 import { JapiDBService } from "./JapiDBService";
 import { type Time } from "../Types/Time";
+import { type TimerStateType } from "../Types/TimerState";
 
 export class TimesService {
   private times: Time[] = [];
@@ -27,9 +28,41 @@ export class TimesService {
     return [...this.times];
   }
 
+  getTotalSeconds(): number {
+    return this.japiDBService.getTotalSeconds();
+  }
+
+  setTotalSeconds(seconds: number): void {
+    this.japiDBService.pushTotalSeconds(seconds);
+  }
+
+  getChronoSeconds(): number {
+    return this.japiDBService.getChronoSeconds();
+  }
+
+  setChronoSeconds(seconds: number): void {
+    this.japiDBService.pushChronoSeconds(seconds);
+  }
+
+  getTimerState(): TimerStateType {
+    return this.japiDBService.getTimerState();
+  }
+
+  setTimerState(state: TimerStateType): void {
+    this.japiDBService.pushTimerState(state);
+  }
+
+  getLatestId(): number {
+    if (this.times.length === 0) {
+      return -1;
+    }
+    return Math.max(...this.times.map(t => t.id));
+  }
+
   addTime(totalTime: number): Time {
+    this.nextId = this.getLatestId() + 1;
     const newTime: Time = {
-      id: this.nextId++,
+      id: this.nextId,
       totalTime,
       date: new Date().toISOString(),
     };
